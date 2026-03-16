@@ -100,7 +100,7 @@ async def process_blob(pool: asyncpg.Pool, blob_name: str) -> None:
                 price,
                 total,
             ))
-        except (ValueError, KeyError) as e:
+        except (ValueError, KeyError, AttributeError) as e: 
             logger.warning("Línea inválida ignorada: %s — %s", row, e)
             continue
 
@@ -163,4 +163,5 @@ async def main() -> None:
             await asyncio.sleep(5)
 
 
-asyncio.run(main())
+if __name__ == "__main__":    
+    asyncio.run(main())
