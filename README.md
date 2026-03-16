@@ -41,6 +41,12 @@ Cliente → FastAPI → Azure Blob Storage
 
 ---
 
+## Sustentación
+
+El siguiente video presenta la arquitectura del sistema, las decisiones técnicas tomadas y una demo en vivo del flujo completo.
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/a7a2de09fed44b3cbdd579ba8cb2cf55" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+
 ## Decisiones técnicas
 
 ### ¿Por qué no cargar el CSV completo en memoria?
