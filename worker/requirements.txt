@@ -1,0 +1,4 @@
+asyncpg
+azure-storage-blob
+azure-storage-queue
+aiohttp

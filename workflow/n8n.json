@@ -1,0 +1,155 @@
+{
+  "name": "ETL - Resumen diario de ventas",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [0, 0],
+      "id": "f20d5bdb-e0fd-46c3-a8ad-ba48da11029b",
+      "name": "Trigger - Cada 15 min"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, blob_name FROM jobs WHERE status = 'COMPLETED'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [220, 0],
+      "id": "0b43bc12-f781-46e5-83e6-08fff2fb8c31",
+      "name": "Consultar Jobs Completados",
+      "credentials": {
+        "postgres": {
+          "id": "uWmfNSCTPNZNqgcu",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $items().length }}",
+              "operation": "larger",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [440, 0],
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Hay jobs completados?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    TO_CHAR(date, 'YYYY-MM-DD') AS date,\n    SUM(total) AS total_sales,\n    SUM(quantity) AS total_quantity\nFROM sales\nGROUP BY date\nORDER BY date",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [660, -100],
+      "id": "32c3f3c5-da19-4f5c-99fd-161137808790",
+      "name": "Calcular Ventas Por Día",
+      "credentials": {
+        "postgres": {
+          "id": "uWmfNSCTPNZNqgcu",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO sales_daily_summary (date, total_sales, total_quantity, updated_at)\nVALUES (\n    '{{ $json.date }}'::date,\n    {{ $json.total_sales }},\n    {{ $json.total_quantity }},\n    NOW()\n)\nON CONFLICT (date)\nDO UPDATE SET\n    total_sales = EXCLUDED.total_sales,\n    total_quantity = EXCLUDED.total_quantity,\n    updated_at = NOW()",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [880, -100],
+      "id": "2a72fa3d-8c4f-494d-b57e-216fbf6db4fa",
+      "name": "Guardar Resumen Diario",
+      "credentials": {
+        "postgres": {
+          "id": "uWmfNSCTPNZNqgcu",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Trigger - Cada 15 min": {
+      "main": [
+        [
+          {
+            "node": "Consultar Jobs Completados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Jobs Completados": {
+      "main": [
+        [
+          {
+            "node": "Hay jobs completados?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hay jobs completados?": {
+      "main": [
+        [
+          {
+            "node": "Calcular Ventas Por Día",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Calcular Ventas Por Día": {
+      "main": [
+        [
+          {
+            "node": "Guardar Resumen Diario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "3f2337df-a4ba-4209-8c54-6b74dc3b7862",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e96f67ffc25e6bdc52f763e3e4ced106a5f24715fe4fa723690482c55b4c3851"
+  },
+  "id": "HxGTzHXGdnGnEVTM",
+  "tags": []
+}
