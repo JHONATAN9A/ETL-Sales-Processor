@@ -45,7 +45,14 @@ Cliente → FastAPI → Azure Blob Storage
 
 El siguiente video presenta la arquitectura del sistema, las decisiones técnicas tomadas y una demo en vivo del flujo completo.
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/a7a2de09fed44b3cbdd579ba8cb2cf55" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+<div>
+    <a href="https://www.loom.com/share/a7a2de09fed44b3cbdd579ba8cb2cf55">
+      <p>Presentación de un sistema de carga asíncrona de datos desde archivos CSV a PostgreSQL - Watch Video</p>
+    </a>
+    <a href="https://www.loom.com/share/a7a2de09fed44b3cbdd579ba8cb2cf55">
+      <img style="max-width:100vw;" src="https://cdn.loom.com/sessions/thumbnails/a7a2de09fed44b3cbdd579ba8cb2cf55-8cdeedb47a3b7463-full-play.gif#t=0.1">
+    </a>
+  </div>
 
 ## Decisiones técnicas
 
